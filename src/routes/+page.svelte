@@ -25,7 +25,7 @@
       <Card.Title class="flex items-center"><MapPin class="mr-2 size-6" />Quests</Card.Title>
     </Card.Header>
     <Card.Content class>
-      <p>There are currently <b>{data.questCount}</b> players.</p>
+      <p>There are currently <b>{data.questCount}</b> quests.</p>
     </Card.Content>
   </Card.Root>
   <Card.Root class>
@@ -33,7 +33,7 @@
       <Card.Title class="flex items-center"><Award class="mr-2 size-6" />Dungeons</Card.Title>
     </Card.Header>
     <Card.Content class>
-      <p>There are currently <b>{data.dungeonCount}</b> players.</p>
+      <p>There are currently <b>{data.dungeonCount}</b> dungeons.</p>
     </Card.Content>
   </Card.Root>
 </div>
