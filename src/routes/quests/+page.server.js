@@ -17,7 +17,7 @@ export const actions = {
 			body: JSON.stringify({
 				name: data.get('name') || 'unnamed quest',
 				latitude: data.get('latitude') || 0,
-				longitude: data.get('longitude') ||0,
+				longitude: data.get('longitude') || 0,
 			})
 		});
 	},

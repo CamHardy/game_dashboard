@@ -35,8 +35,8 @@
       </Dialog.Header>
       <form method="POST" action="?/create" class="flex flex-col space-y-2">
         <Input class type="text" name="name" placeholder="Name" />
-        <Input class type="number" name="latitude" placeholder="Latitude" />
-        <Input class type="number" name="longitude" placeholder="Longitude" />
+        <Input class type="number" name="latitude" step="any" placeholder="Latitude" />
+        <Input class type="number" name="longitude" step="any" placeholder="Longitude" />
         <br/>
         <Button class="w-48 self-center" type="submit">
           Add a quest
