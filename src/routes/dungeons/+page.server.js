@@ -1,10 +1,10 @@
 import { API_URL } from '$env/static/private';
+import { fail } from '@sveltejs/kit';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load() {
 	return {
-		dungeons: await fetch(`${API_URL}/dungeon`).then(res => res.json()),
-		isTemporary: false
+		dungeons: await fetch(`${API_URL}/dungeon`).then(res => res.json())
 	};
 }
 
@@ -12,7 +12,7 @@ export async function load() {
 export const actions = {
 	create: async ({ request }) => {
 		const data = await request.formData();
-		await fetch(`${API_URL}/dungeon/create`, {
+		const res = await fetch(`${API_URL}/dungeon/create`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
@@ -22,10 +22,12 @@ export const actions = {
 				expiry_time: data.get('expiryDate') || null
 			})
 		});
+		if (!res.ok) return fail(res.status, { success: false, message: 'Failed to create dungeon' });
+		return { success: true, message: 'Dungeon created' };
 	},
 	edit: async ({ request }) => {
 		const data = await request.formData();
-		await fetch(`${API_URL}/dungeon/update`, {
+		const res = await fetch(`${API_URL}/dungeon/update`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
@@ -36,12 +38,16 @@ export const actions = {
 				expiry_time: data.get('expiryDate') || null
 			})
 		});
+		if (!res.ok) return fail(res.status, { success: false, message: 'Failed to update dungeon' });
+		return { success: true, message: 'Dungeon edited' };
 	},
 	delete: async ({ request }) => {
 		const data = await request.formData();
 		const id = data.get('id');
-		await fetch(`${API_URL}/dungeon/${id}`, {
+		const res = await fetch(`${API_URL}/dungeon/${id}`, {
 			method: 'DELETE'
 		});
+		if (!res.ok) return fail(res.status, { success: false, message: 'Failed to delete dungeon' });
+		return { success: true, message: 'Dungeon deleted' };
 	}
 };

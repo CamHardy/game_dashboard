@@ -4,6 +4,7 @@
   import UserRound from "lucide-svelte/icons/user-round";
   import MapPin from "lucide-svelte/icons/map-pin";
   import Award from "lucide-svelte/icons/award";
+  import { toast } from "svelte-sonner";
 
 	/** @type {{ data: import('./$types').PageData }} */
 	let { data } = $props();

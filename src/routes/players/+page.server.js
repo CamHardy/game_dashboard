@@ -1,4 +1,5 @@
 import { API_URL } from '$env/static/private';
+import { fail } from '@sveltejs/kit';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load() {
@@ -11,7 +12,9 @@ export async function load() {
 export const actions = {
 	create: async ({ request }) => {
 		const data = await request.formData();
-		await fetch(`${API_URL}/player/create`, {
+		let inventory = data.get('inventory');
+		let inventoryJson = inventory ? JSON.parse(inventory.toString()) : null;
+		const res = await fetch(`${API_URL}/player/create`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
@@ -22,19 +25,23 @@ export const actions = {
 				damage_points: data.get('damage') || 0,
 				energy_points: data.get('energy') || 0,
 				currency: data.get('currency') || 0,
-				inventory: {
+				inventory: inventoryJson || {
 					items: [],
 					equipped_items: [],
 					action_items: []
 				},
-				active_quest: null,
+				active_quest: data.get('active_quest') || null,
 				dungeon_tokens: []
 			})
 		});
+		if (!res.ok) return fail(res.status, { success: false, message: 'Failed to create player' });
+		return { success: true, message: 'Player created' };
 	},
 	edit: async ({ request }) => {
 		const data = await request.formData();
-		await fetch(`${API_URL}/player/update`, {
+		let inventory = data.get('inventory');
+		let inventoryJson = inventory ? JSON.parse(inventory.toString()) : null;
+		const res = await fetch(`${API_URL}/player/update`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
@@ -46,20 +53,25 @@ export const actions = {
 				damage_points: data.get('damage') || 0,
 				energy_points: data.get('energy') || 0,
 				currency: data.get('currency') || 0,
-				inventory: {
+				inventory: inventoryJson || {
 					items: [],
 					equipped_items: [],
 					action_items: []
 				},
+				active_quest: data.get('active_quest') || null,
 				dungeon_tokens: []
 			})
 		});
+		if (!res.ok) return fail(res.status, { success: false, message: 'Failed to edit player' });
+		return { success: true, message: 'Player edited' };
 	},
 	delete: async ({ request }) => {
 		const data = await request.formData();
 		const id = data.get('id');
-		await fetch(`${API_URL}/player/${id}`, {
+		const res = await fetch(`${API_URL}/player/${id}`, {
 			method: 'DELETE'
 		});
+		if (!res.ok) return fail(res.status, { success: false, message: 'Failed to delete player' });
+		return { success: true, message: 'Player deleted' };
 	}
 };

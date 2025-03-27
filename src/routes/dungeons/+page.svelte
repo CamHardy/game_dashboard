@@ -1,55 +1,34 @@
 <script>
   import { Button } from "$lib/components/ui/button/index.js";
   import * as Dialog from "$lib/components/ui/dialog/index.js";
-  import { Input } from "$lib/components/ui/input/index.js";
   import * as Table from "$lib/components/ui/table/index.js";
-  
-  import Plus from "lucide-svelte/icons/plus";
-  import Trash from "lucide-svelte/icons/trash-2";
-  import Pencil from "lucide-svelte/icons/pencil";
+  import { toast } from "svelte-sonner";
 
-	/** @type {{ data: import('./$types').PageData }} */
+  import AddDungeonDialog from "$lib/components/AddDungeonDialog.svelte";
+  import EditDungeonDialog from "$lib/components/EditDungeonDialog.svelte";
+
+  import Trash from "lucide-svelte/icons/trash-2";
+
+	/** @type {{ data: import('./$types').PageData, form: import('./$types').ActionData }} */
   let {
-    data
+    data, form
   } = $props();
 
-  let isTemporary = $state(false);
-  let editIsTemporary = $state(false);
+  $effect(() => {
+    // display form toasts
+    if (form) {
+      if (form.success === true) {
+        toast.success(form.message || "Success!");
+      } else {
+        toast.error(form.message || "An error occurred.");
+      }
+    }
+  })
 </script>
  
 <div class="mx-auto my-6 items-center max-w-4xl p-6 space-y-4 rounded border">
   <h1 class="text-3xl font-bold">Dungeons</h1>
-  <Dialog.Root>
-    <Dialog.Trigger>
-      <Button class>
-        <Plus class="mr-2 size-4" />
-        Add a dungeon
-      </Button>
-    </Dialog.Trigger>
-    <Dialog.Content class>
-      <Dialog.Header class>
-        <Dialog.Title class>Add a dungeon</Dialog.Title>
-        <Dialog.Description class>
-          This action will add a dungeon.
-        </Dialog.Description>
-      </Dialog.Header>
-      <form method="POST" action="?/create" class="flex flex-col space-y-2">
-        <Input class type="text" name="name" placeholder="Name" />
-        <Input class type="number" name="seed" placeholder="Seed" />
-        <div class="flex items-center space-x-2">
-          <input type="checkbox" name="isTemporary" bind:checked={isTemporary} />
-          <label for="isTemporary">Temporary</label>
-        </div>
-        {#if isTemporary}
-          <Input class type="date" name="expiryDate" placeholder="Expiry Date" />
-        {/if}
-        <br/>
-        <Button class="w-48 self-center" type="submit">
-          Add a dungeon
-        </Button>
-      </form>
-    </Dialog.Content>
-  </Dialog.Root>
+  <AddDungeonDialog/>
 
   <div class="w-full h-[480px] overflow-auto rounded border">
     <Table.Root class>
@@ -72,37 +51,7 @@
             <Table.Cell class>{new Date(dungeon.updatedAt).toDateString()}</Table.Cell>
             <Table.Cell class>
               <div class="flex space-x-2">
-                <Dialog.Root>
-                  <Dialog.Trigger>
-                    <div class="w-10 h-10 flex justify-center items-center rounded-full hover:text-white hover:bg-gray-500">
-                      <Pencil/>
-                    </div>
-                  </Dialog.Trigger>
-                  <Dialog.Content class>
-                    <Dialog.Header class>
-                      <Dialog.Title class>Edit a dungeon</Dialog.Title>
-                      <Dialog.Description class>
-                        This action will edit a dungeon.
-                      </Dialog.Description>
-                    </Dialog.Header>
-                    <form method="POST" action="?/edit" class="flex flex-col space-y-2">
-                      <input type="hidden" name="id" value={dungeon.id} />
-                      <Input class type="text" name="name" placeholder="Name" />
-                      <Input class type="text" name="seed" placeholder="Seed" />
-                      <div class="flex items-center space-x-2">
-                        <input type="checkbox" name="isTemporary" bind:checked={editIsTemporary} />
-                        <label for="isTemporary">Temporary</label>
-                      </div>
-                      {#if editIsTemporary}
-                        <Input class type="date" name="expiryDate" placeholder="Expiry Date" />
-                      {/if}
-                      <br/>
-                      <Button class="w-48 self-center" type="submit">
-                        Edit a dungeon
-                      </Button>
-                    </form>
-                  </Dialog.Content>
-                </Dialog.Root>
+                <EditDungeonDialog {dungeon}/>
                 <Dialog.Root>
                   <Dialog.Trigger>
                     <div class="w-10 h-10 flex justify-center items-center rounded-full hover:text-white hover:bg-red-500">

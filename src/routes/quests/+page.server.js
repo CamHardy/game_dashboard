@@ -1,4 +1,5 @@
 import { API_URL } from '$env/static/private';
+import { fail } from '@sveltejs/kit';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load() {
@@ -11,7 +12,7 @@ export async function load() {
 export const actions = {
 	create: async ({ request }) => {
 		const data = await request.formData();
-		await fetch(`${API_URL}/quest/create`, {
+		const res = await fetch(`${API_URL}/quest/create`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
@@ -20,10 +21,12 @@ export const actions = {
 				longitude: data.get('longitude') || 0,
 			})
 		});
+		if (!res.ok) return fail(res.status, { success: false, message: 'Failed to create quest.' });
+		return { success: true, message: 'Quest created' };
 	},
 	edit: async ({ request }) => {
 		const data = await request.formData();
-		await fetch(`${API_URL}/quest/update`, {
+		const res = await fetch(`${API_URL}/quest/update`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
@@ -33,12 +36,16 @@ export const actions = {
 				longitude: data.get('longitude') || 0,
 			})
 		});
+		if (!res.ok) return fail(res.status, { success: false, message: 'Failed to edit quest' });
+		return { success: true, message: 'Quest edited' };
 	},
 	delete: async ({ request }) => {
 		const data = await request.formData();
 		const id = data.get('id');
-		await fetch(`${API_URL}/quest/${id}`, {
+		const res = await fetch(`${API_URL}/quest/${id}`, {
 			method: 'DELETE'
 		});
+		if (!res.ok) return fail(res.status, { success: false, message: 'Failed to delete quest.' });
+		return { success: true, message: 'Quest deleted' };
 	}
 };

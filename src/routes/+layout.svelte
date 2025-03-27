@@ -1,6 +1,7 @@
 <script>
 	import '../app.css';
 	import { page } from '$app/stores';
+	import { Toaster } from '$lib/components/ui/sonner';
   
 	let { children } = $props();
 	let options = ['dashboard', 'players', 'quests', 'dungeons'];
@@ -43,6 +44,8 @@
 		</div>
 	</div>
 </nav>
+
+<Toaster richColors/>
 
 {@render children()}
 
